@@ -42,7 +42,6 @@ def get_addon_ip_and_port(addon_slug, headers):
     return grocy_ip, grocy_port
 
 
-
 def test_grocy_connection_handler():
     """
     Handle the Grocy connection testing process via an API endpoint.
@@ -55,8 +54,8 @@ def test_grocy_connection_handler():
             return jsonify({"status": "error", "message": "API key is required"}), 400
 
         # Resolve the Grocy addon
-        grocy_slug = get_grocy_addon_info()
-        grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug)
+        grocy_slug = get_grocy_addon_info(headers=HEADERS)
+        grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug, headers=HEADERS)
 
         # Test the connection
         internal_grocy_url = f"http://{grocy_ip}:{grocy_port}/api/system/info"
@@ -105,3 +104,4 @@ def test_grocy_connection(api_key, grocy_url):
             return False, f"Unexpected status code: {response.status_code}"
     except requests.RequestException as e:
         return False, str(e)
+
