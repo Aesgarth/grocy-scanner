@@ -14,6 +14,4 @@ webui: http://[HOST]:[PORT:3456]
 options:
   grocy_api_key: ''
 schema:
-  grocy_api_key:
-    type: string
-    required: true
+  grocy_api_key: str
