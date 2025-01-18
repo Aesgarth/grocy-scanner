@@ -1,33 +1,24 @@
-FROM ghcr.io/hassio-addons/base:12.2.4
-
-# Set labels used in the addon
-LABEL \
-    io.hass.name="Grocy Item Scanner" \
-    io.hass.description="A Home Assistant addon for scanning items into Grocy." \
-    io.hass.version="1.0.0" \
-    maintainer="Aesgarth <aesgarth@aesgarth.co.uk>"
-
-# Setup working directory
-WORKDIR /app
+FROM python:3.11-alpine
 
 # Install dependencies
 RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    nginx \
-    bash
+    nginx supervisor
 
-# Copy addon files
-COPY . /app
+# Set working directory
+WORKDIR /app
 
-# Ensure run.sh is executable
-RUN chmod +x /app/run.sh
+# Copy application and configuration files
+COPY app /app
+COPY web /app/web
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY run.sh /app/run.sh
 
 # Install Python dependencies
-RUN pip3 install -r requirements.txt
+RUN pip install -r /app/requirements.txt
 
 # Expose ingress port
 EXPOSE 3456
 
-# Entrypoint
-CMD ["bash", "/app/run.sh"]
+# Start services
+CMD ["/app/run.sh"]
