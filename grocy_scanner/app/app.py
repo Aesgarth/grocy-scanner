@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 # Environment variables
 HASSIO_TOKEN = os.getenv("HASSIO_TOKEN")
+logger.info(f"HASSIO_TOKEN: {HASSIO_TOKEN}")
 API_KEY = os.getenv("API_KEY")  # Pass the Grocy API key in the addon configuration
 
 logger.info("Initializing Grocy Item Scanner addon...")
