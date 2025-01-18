@@ -13,7 +13,7 @@ logger.info(f"Environment variables: {os.environ}")
 
 # Check if the SUPERVISOR_TOKEN environment variable is available
 supervisor_token = os.getenv("SUPERVISOR_TOKEN")
-print("SUPERVISOR_TOKEN is available" if supervisor_token else "SUPERVISOR_TOKEN is missing")
+logger.info("SUPERVISOR_TOKEN is available" if supervisor_token else "SUPERVISOR_TOKEN is missing")
 
 # Get the ingress path from the environment variable
 ingress_path = os.getenv("INGRESS_PATH", "/")
