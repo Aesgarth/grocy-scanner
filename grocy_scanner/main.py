@@ -3,11 +3,16 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import requests
+import os
 
-app = FastAPI(root_path="/api/hassio_ingress/")  # Ingress base path
+# Set the absolute path for the web directory
+static_folder_path = os.path.join(os.getcwd(), 'web')
+
+# Initialize FastAPI app
+app = FastAPI()
 
 # Mount the 'web' directory to serve static files
-app.mount("/", StaticFiles(directory="web"), name="static")
+app.mount("/", StaticFiles(directory=static_folder_path), name="static")
 
 # Configuration model
 class Config(BaseModel):
