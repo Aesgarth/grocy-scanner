@@ -19,7 +19,7 @@ config = Config(grocy_api_key="")
 @app.get("/")
 def read_root():
     # Redirect root URL to the frontend
-    return RedirectResponse(url="/index.html")
+    return RedirectResponse(url="/web/index.html")
 
 @app.get("/health")
 def health_check():
