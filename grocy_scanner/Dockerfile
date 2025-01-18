@@ -28,4 +28,4 @@ EXPOSE 3456
 RUN ls -l /app
 
 # Start services
-CMD ["/app/run.sh"]
+CMD ["/run.sh"]
