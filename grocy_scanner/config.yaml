@@ -1,23 +1,19 @@
 name: Grocy Item Scanner
 version: 1.0.0
 slug: grocy_scanner
-description: A Home Assistant addon for scanning items into Grocy.
+description: Home Assistant addon to scan items into Grocy.
 arch:
   - amd64
   - armv7
   - aarch64
 startup: application
-init: false
-protected: false
-host_network: true
-services:
-  - supervisor:need
-hassio_api: true
-homeassistant_api: true
 ingress: true
 ingress_port: 3456
 webui: http://[HOST]:[PORT:3456]
 options:
-  grocy_api_key: ''
+  grocy_api_key: ""
 schema:
   grocy_api_key: str
+host_network: true
+full_access: false
+hassio_role: admin
