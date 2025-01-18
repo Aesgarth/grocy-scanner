@@ -9,6 +9,8 @@ arch:
 startup: application
 hassio_api: true
 hassio_role: admin
+homeassistant_api: true
+auth_api: true
 init: false
 ingress: true
 ingress_port: 3456
