@@ -1,5 +1,5 @@
 from flask import Flask
-from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection
+from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection_handler
 import os
 import logging
 
