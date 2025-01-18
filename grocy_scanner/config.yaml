@@ -10,12 +10,7 @@ startup: application
 init: false
 protected: false
 host_network: true
-services:
-  - supervisor.api
-full_access: false
 hassio_api: true
-hassio_role: manager
-homeassistant_api: true
 ingress: true
 ingress_port: 3456
 webui: http://[HOST]:[PORT:3456]
