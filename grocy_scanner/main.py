@@ -7,7 +7,7 @@ import requests
 app = FastAPI()
 
 # Mount the 'web' directory to serve static files
-app.mount("/web", StaticFiles(directory="./web"), name="web")
+app.mount("/web", StaticFiles(directory="web"), name="web")
 
 # Configuration model
 class Config(BaseModel):
@@ -19,7 +19,7 @@ config = Config(grocy_api_key="")
 @app.get("/")
 def read_root():
     # Redirect root URL to the frontend
-    return RedirectResponse(url="/web/index.html")
+    return RedirectResponse(url="./web/index.html")
 
 @app.get("/health")
 def health_check():
