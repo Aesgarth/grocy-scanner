@@ -8,31 +8,31 @@ SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated token variable
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header
 
 
-def fetch_addons():
+def fetch_addons(headers):
     """
     Fetch all addons using the Supervisor API.
     """
-    response = requests.get(f"{SUPERVISOR_API}/addons", headers=HEADERS)
+    response = requests.get(f"{SUPERVISOR_API}/addons", headers=headers)
     response.raise_for_status()
     return response.json()
 
 
-def get_grocy_addon_info():
+def get_grocy_addon_info(headers):
     """
     Locate the Grocy addon and fetch detailed information.
     """
-    addons_data = fetch_addons()
+    addons_data = fetch_addons(headers)
     for addon in addons_data.get('data', {}).get('addons', []):
         if "grocy" in addon.get('slug', '') and addon['slug'] != "grocy_scanner":
             return addon['slug']
     raise ValueError("Grocy addon not found")
 
 
-def get_addon_ip_and_port(addon_slug):
+def get_addon_ip_and_port(addon_slug, headers):
     """
     Fetch the IP address and port for the specified addon.
     """
-    response = requests.get(f"{SUPERVISOR_API}/addons/{addon_slug}/info", headers=HEADERS)
+    response = requests.get(f"{SUPERVISOR_API}/addons/{addon_slug}/info", headers=headers)
     response.raise_for_status()
     addon_info = response.json()
     grocy_ip = addon_info.get('data', {}).get('ip_address')
@@ -40,6 +40,7 @@ def get_addon_ip_and_port(addon_slug):
     if not grocy_ip:
         raise ValueError("Grocy addon IP address not found")
     return grocy_ip, grocy_port
+
 
 
 def test_grocy_connection_handler():
