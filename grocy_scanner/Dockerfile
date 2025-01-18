@@ -3,6 +3,9 @@ FROM ghcr.io/hassio-addons/base:17.1.0
 # Set working directory
 WORKDIR /app
 
+# Install Python and pip
+RUN apk add --no-cache python3 py3-pip
+
 # Copy application and configuration files
 COPY app /app
 COPY web /app/web
@@ -14,7 +17,7 @@ COPY run.sh /app/run.sh
 RUN chmod +x /app/run.sh
 
 # Install Python dependencies
-RUN pip install -r /app/requirements.txt
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
 
 # Expose ingress port
 EXPOSE 3456
