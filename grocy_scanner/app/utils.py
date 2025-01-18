@@ -87,3 +87,19 @@ def test_grocy_connection_handler():
         return jsonify({"status": "error", "message": f"Error querying Supervisor API: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"status": "error", "message": f"Unexpected error: {str(e)}"}), 500
+
+def test_grocy_connection(api_key, grocy_url):
+    """
+    Test connection to the Grocy API using the provided API key.
+    """
+    try:
+        headers = {"GROCY-API-KEY": api_key}
+        response = requests.get(grocy_url, headers=headers)
+        if response.status_code == 200:
+            return True, "Connection successful"
+        elif response.status_code == 401:
+            return False, "Unauthorized. Check your API key."
+        else:
+            return False, f"Unexpected status code: {response.status_code}"
+    except requests.RequestException as e:
+        return False, str(e)
