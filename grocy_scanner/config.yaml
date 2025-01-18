@@ -12,6 +12,7 @@ protected: false
 host_network: true
 full_access: false
 hassio_api: true
+hassio_role: manager
 homeassistant_api: true
 ingress: true
 ingress_port: 3456
