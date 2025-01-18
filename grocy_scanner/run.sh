@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/with-contenv sh
 
 echo "Starting Grocy Item Scanner Addon..."
 echo "Initializing Flask server..."
