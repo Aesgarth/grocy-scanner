@@ -4,8 +4,8 @@ import json
 from flask import jsonify, request
 
 SUPERVISOR_API = "http://supervisor"
-HASSIO_TOKEN = os.getenv("HASSIO_TOKEN")
-HEADERS = {"Authorization": f"Bearer {HASSIO_TOKEN}"}
+SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated token variable
+HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header
 
 
 def fetch_addons():
@@ -87,6 +87,7 @@ def test_grocy_connection_handler():
         return jsonify({"status": "error", "message": f"Error querying Supervisor API: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"status": "error", "message": f"Unexpected error: {str(e)}"}), 500
+
 
 def test_grocy_connection(api_key, grocy_url):
     """
