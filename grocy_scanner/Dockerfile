@@ -22,5 +22,7 @@ RUN pip3 install --no-cache-dir -r /app/requirements.txt
 # Expose ingress port
 EXPOSE 3456
 
+ENV API_KEY=${api_key}
+
 # Start services
 CMD ["/app/run.sh"]
