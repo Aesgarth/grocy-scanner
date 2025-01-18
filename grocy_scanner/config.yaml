@@ -7,7 +7,7 @@ arch:
   - armv7
   - aarch64
 startup: application
-startup: application
+init: false
 protected: false
 host_network: true
 full_access: false
