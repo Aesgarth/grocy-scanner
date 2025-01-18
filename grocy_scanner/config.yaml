@@ -8,7 +8,7 @@ arch:
   - aarch64
 startup: application
 hassio_api: true
-hassio_role: default
+hassio_role: admin
 init: false
 ingress: true
 ingress_port: 3456
