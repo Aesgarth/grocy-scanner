@@ -1,13 +1,7 @@
-#!/bin/bash
-set -e
+#!/bin/sh
+
 echo "Starting Grocy Item Scanner Addon..."
+echo "Initializing Flask server..."
 
-# Ensure configuration directory exists
-CONFIG_DIR="/data/config"
-if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p "$CONFIG_DIR"
-fi
-
-# Start the application
-echo "Starting FastAPI server..."
-exec uvicorn main:app --host 0.0.0.0 --port 3456
+# Start Flask server
+exec python3 /app/app.py
