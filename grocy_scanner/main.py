@@ -13,16 +13,20 @@ logger.info(f"Environment variables: {os.environ}")
 
 # Check if the SUPERVISOR_TOKEN environment variable is available
 supervisor_token = os.getenv("SUPERVISOR_TOKEN")
-logger.info("SUPERVISOR_TOKEN is available" if supervisor_token else "SUPERVISOR_TOKEN is missing")
+if supervisor_token:
+    logger.info("SUPERVISOR_TOKEN is available")
+else:
+    logger.error("SUPERVISOR_TOKEN is missing")
+    
 
 # Get addon info from the Supervisor API
-supervisor_url = "http://supervisor/addons/self/info"
 headers = {"Authorization": f"Bearer {supervisor_token}"}
-response = requests.get(supervisor_url, headers=headers)
+response = requests.get("http://supervisor/addons/self/info", headers=headers)
 if response.status_code == 200:
-    ingress_path = response.json().get("data", {}).get("ingress_url", "/")
+    logger.info(f"Ingress URL: {response.json().get('data', {}).get('ingress_url', '/')}")
 else:
-    ingress_path = "/"
+    logger.error(f"Failed to access Supervisor API: {response.status_code} - {response.text}")
+
 
 # Set the absolute path for the web directory
 static_folder_path = os.path.join(os.getcwd(), 'web')
