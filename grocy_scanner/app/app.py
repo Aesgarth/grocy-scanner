@@ -10,15 +10,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Environment variables
-HASSIO_TOKEN = os.getenv("HASSIO_TOKEN")
-logger.info(f"HASSIO_TOKEN: {HASSIO_TOKEN}")
+SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated environment variable
+logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
 API_KEY = os.getenv("API_KEY")  # Pass the Grocy API key in the addon configuration
+
+HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
 
 logger.info("Initializing Grocy Item Scanner addon...")
 try:
     # Locate Grocy addon
-    grocy_slug = get_grocy_addon_info()
-    grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug)
+    grocy_slug = get_grocy_addon_info(headers=HEADERS)  # Pass headers to utils function
+    grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug, headers=HEADERS)
     grocy_url = f"http://{grocy_ip}:{grocy_port}/api/system/info"
     
     # Test API connection
