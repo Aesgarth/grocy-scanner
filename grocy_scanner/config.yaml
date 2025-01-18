@@ -12,7 +12,7 @@ protected: false
 host_network: true
 full_access: true
 hassio_api: true
-hassio_role: manager
+hassio_role: admin
 homeassistant_api: true
 auth_api: true
 ingress: true
