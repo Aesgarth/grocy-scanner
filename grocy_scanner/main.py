@@ -4,12 +4,21 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import requests
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Get the ingress path from the environment variable
+ingress_path = os.getenv("INGRESS_PATH", "/")
+logger.info(f"Ingress path: {ingress_path}")
 
 # Set the absolute path for the web directory
 static_folder_path = os.path.join(os.getcwd(), 'web')
 
-# Initialize FastAPI app
-app = FastAPI()
+# Initialize FastAPI app with the ingress path
+app = FastAPI(root_path=ingress_path)
 
 # Mount the 'web' directory to serve static files
 app.mount("/", StaticFiles(directory=static_folder_path), name="static")
