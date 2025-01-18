@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import requests
 
-app = FastAPI()
+app = FastAPI(root_path="/api/hassio_ingress/")  # Ingress base path
 
 # Mount the 'web' directory to serve static files
 app.mount("/", StaticFiles(directory="web"), name="static")
@@ -19,7 +19,7 @@ config = Config(grocy_api_key="")
 @app.get("/")
 def read_root():
     # Redirect root URL to the frontend
-    return RedirectResponse(url="/web/index.html")
+    return RedirectResponse(url="/index.html")
 
 @app.get("/health")
 def health_check():
@@ -44,4 +44,3 @@ def scan_barcode(barcode: str):
         product = response.json()
         return {"barcode": barcode, "product": product}
     raise HTTPException(status_code=404, detail="Product not found")
-
