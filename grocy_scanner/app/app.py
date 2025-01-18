@@ -8,6 +8,10 @@ SUPERVISOR_API = "http://supervisor"
 HASSIO_TOKEN = os.getenv("HASSIO_TOKEN")
 HEADERS = {"Authorization": f"Bearer {HASSIO_TOKEN}"}
 
+@app.route('/')
+def home():
+    return {"message": "Grocy Item Scanner is running!"}
+
 @app.route('/api/supervisor', methods=['GET'])
 def get_supervisor_info():
     response = requests.get(f"{SUPERVISOR_API}/addons", headers=HEADERS)
