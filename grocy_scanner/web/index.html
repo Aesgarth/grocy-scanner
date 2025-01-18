@@ -4,40 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grocy Item Scanner</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <!-- Load Material Design Components -->
+    <link rel="stylesheet" href="https://unpkg.com/@material-components/material-components-web/dist/material-components-web.min.css">
+    <script src="https://unpkg.com/@material-components/material-components-web/dist/material-components-web.min.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
     <h1>Grocy Item Scanner</h1>
-    <div id="scanner-container"></div>
-    <button onclick="startScanner()">Start Scanning</button>
-    <script>
-        function startScanner() {
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector('#scanner-container')
-                },
-                decoder: {
-                    readers: ["code_128_reader"]
-                }
-            }, function (err) {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-                console.log("Initialization finished. Ready to start");
-                Quagga.start();
-            });
-
-            Quagga.onDetected(function (data) {
-                console.log(data.codeResult.code);
-                fetch(`/scan/${data.codeResult.code}`)
-                    .then(response => response.json())
-                    .then(data => console.log(data))
-                    .catch(error => console.error(error));
-            });
-        }
-    </script>
+    <div id="scanner-container">Place your barcode here...</div>
+    <button class="mdc-button mdc-button--raised" onclick="startScanner()">Start Scanning</button>
 </body>
 </html>
