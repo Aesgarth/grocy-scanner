@@ -9,6 +9,7 @@ import logging
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logger.info(f"Environment variables: {os.environ}")
 
 # Get the ingress path from the environment variable
 ingress_path = os.getenv("INGRESS_PATH", "/")
