@@ -7,6 +7,7 @@ arch:
   - armv7
   - aarch64
 startup: application
+init: false
 ingress: true
 ingress_port: 3456
 webui: http://[HOST]:[PORT:3456]
