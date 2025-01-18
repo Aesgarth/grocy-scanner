@@ -29,28 +29,6 @@ try:
 except Exception as e:
     logger.error(f"Error during addon initialization: {str(e)}")
 
-@app.before_first_request
-def initialize_addon():
-    """
-    Initialize the addon: find Grocy address, test API connection, and log results.
-    """
-    try:
-        logger.info("Initializing Grocy Item Scanner addon...")
-        
-        # Locate Grocy addon
-        grocy_slug = get_grocy_addon_info()
-        grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug)
-        grocy_url = f"http://{grocy_ip}:{grocy_port}/api/system/info"
-        
-        # Test API connection
-        success, message = test_grocy_connection(API_KEY, grocy_url)
-        if success:
-            logger.info(f"Successfully connected to Grocy at {grocy_url}. API is accessible.")
-        else:
-            logger.error(f"Failed to connect to Grocy at {grocy_url}. Error: {message}")
-    except Exception as e:
-        logger.error(f"Error during addon initialization: {str(e)}")
-
 @app.route('/')
 def home():
     return {"message": "Grocy Item Scanner is running!"}
