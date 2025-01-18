@@ -20,6 +20,9 @@ RUN apk add --no-cache \
 # Copy addon files
 COPY . /app
 
+# Ensure run.sh is executable
+RUN chmod +x /app/run.sh
+
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
 
