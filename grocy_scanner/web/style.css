@@ -1,0 +1,52 @@
+/* Inherit styles from Home Assistant's theme */
+body {
+    margin: 0;
+    padding: 16px;
+    font-family: var(--mdc-typography-font-family, Roboto, sans-serif);
+    background-color: var(--primary-background-color);
+    color: var(--primary-text-color);
+}
+
+/* Header */
+h1 {
+    font-size: 24px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+/* Scanner Container */
+#scanner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed var(--divider-color);
+    padding: 16px;
+    height: 300px;
+    background-color: var(--card-background-color);
+    border-radius: 8px;
+    margin: 16px auto;
+}
+
+/* Button */
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: var(--text-primary-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: var(--mdc-elevation-z2);
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--primary-dark-color);
+    box-shadow: var(--mdc-elevation-z4);
+}
+
+button:active {
+    background-color: var(--primary-light-color);
+    box-shadow: var(--mdc-elevation-z8);
+}
