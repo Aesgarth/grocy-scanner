@@ -1,4 +1,4 @@
-FROM ghcr.io/hassio-addons/base:latest
+FROM ghcr.io/hassio-addons/base:17.1.0
 
 # Set working directory
 WORKDIR /app
