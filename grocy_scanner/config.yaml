@@ -18,3 +18,4 @@ schema:
 host_network: true
 full_access: false
 hassio_role: admin
+memory_limit: 256m
