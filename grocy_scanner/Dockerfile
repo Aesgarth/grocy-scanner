@@ -14,6 +14,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY run.sh /app/run.sh
 
+RUN chmod +x /app/run.sh
+
 # Install Python dependencies
 RUN pip install -r /app/requirements.txt
 
