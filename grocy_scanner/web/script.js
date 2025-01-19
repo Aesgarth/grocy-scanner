@@ -95,7 +95,7 @@ async function handleScannedBarcode(barcode) {
         const response = await fetch(`${BASE_PATH}/api/check-barcode`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
+            body: JSON.stringify({ barcode }),
         });
 
         console.log("Response received:", response);
@@ -110,12 +110,8 @@ async function handleScannedBarcode(barcode) {
         console.log("Parsed response JSON:", result);
 
         if (result.status === "success") {
-            const product = result.product;
-            if (product && product.name) {
-                message.textContent = `Product found: ${product.name}. What would you like to do?`;
-            } else {
-                message.textContent = "Product details not available.";
-            }
+            const { product_name, stock_amount, unit, location } = result; // Destructure pre-processed data
+            message.textContent = `Product: ${product_name}\nStock: ${stock_amount} ${unit}\nLocation: ${location}`;
         } else if (result.status === "not_found") {
             message.textContent = "Product not found in Grocy. Would you like to add it?";
         } else {
