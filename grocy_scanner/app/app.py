@@ -26,7 +26,6 @@ try:
     with open(OPTIONS_PATH, 'r') as options_file:
         options = json.load(options_file)
         API_KEY = options.get("grocy_api_key")  # Match the correct key name
-        logger.info(f"Loaded options: {options}")
         logger.info(f"API_KEY loaded: {'Yes' if API_KEY else 'No'}")
 except FileNotFoundError:
     logger.error(f"{OPTIONS_PATH} not found.")
