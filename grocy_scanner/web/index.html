@@ -11,6 +11,17 @@
     <video id="camera" autoplay muted></video>
     <button id="start-scan">Start Scanning</button>
     <div id="message"></div>
+
+    <!-- Action buttons and quantity input -->
+    <div id="actions" style="display: none;">
+        <h3>Actions</h3>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" min="1" value="1">
+        <button id="purchase-button">Purchase</button>
+        <button id="consume-button">Consume</button>
+        <button id="open-button">Mark as Opened</button>
+    </div>
+
     <audio id="beep" src="beep.mp3" preload="auto"></audio>
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <script src="script.js"></script>
