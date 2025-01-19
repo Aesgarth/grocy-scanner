@@ -73,7 +73,7 @@ def serve_static(filename):
 @app.route("/api/check-barcode", methods=["POST"])
 def check_barcode():
     """
-    Endpoint to handle barcode scanning and check against Grocy.
+    Endpoint to handle barcode scanning and check against Grocy using the stock "by-barcode" API.
     """
     if not grocy_url:
         return jsonify({"status": "error", "message": "Grocy URL is not resolved. Please check the configuration."}), 500
@@ -84,27 +84,14 @@ def check_barcode():
     if not barcode:
         return jsonify({"status": "error", "message": "No barcode provided"}), 400
 
-    try:
-        headers = {"GROCY-API-KEY": API_KEY}
-        response = requests.get(
-            f"{grocy_url}/api/objects/products",
-            headers=headers,
-            params={"query": f"barcode={barcode}"}
-        )
+    success, result = check_barcode_in_grocy(barcode, grocy_url, API_KEY)
 
-        if response.status_code == 200:
-            products = response.json()
-            if products:
-                product = products[0]  # Assume the first match is correct
-                return jsonify({"status": "success", "product": product})
-            else:
-                return jsonify({"status": "not_found", "message": "Product not found"})
-        else:
-            return jsonify({"status": "error", "message": f"Grocy API error: {response.status_code}"}), response.status_code
-
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
+    if success:
+        return jsonify({"status": "success", "product": result})
+    elif "not found" in result.lower():
+        return jsonify({"status": "not_found", "message": result})
+    else:
+        return jsonify({"status": "error", "message": result}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3456)
