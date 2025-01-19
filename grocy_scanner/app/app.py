@@ -2,6 +2,7 @@ from flask import Flask
 from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection_handler, test_grocy_connection
 import os
 import logging
+import json
 
 app = Flask(__name__)
 
@@ -13,8 +14,22 @@ logger = logging.getLogger(__name__)
 logger.info(f"Environment Variables: {os.environ}")
 SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated environment variable
 logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
-API_KEY = os.getenv("API_KEY")  # Pass the Grocy API key in the addon configuration
-logger.info(f"Using API_KEY: {API_KEY}")
+
+# Path to the options.json file
+OPTIONS_PATH = "/data/options.json"
+
+# Read the API key from the options.json file
+API_KEY = None
+try:
+    with open(OPTIONS_PATH, 'r') as options_file:
+        options = json.load(options_file)
+        API_KEY = options.get("api_key")
+        logger.info(f"API_KEY loaded: {'Yes' if API_KEY else 'No'}")
+except FileNotFoundError:
+    logger.error(f"{OPTIONS_PATH} not found.")
+except json.JSONDecodeError as e:
+    logger.error(f"Error parsing {OPTIONS_PATH}: {e}")
+
 
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
 
