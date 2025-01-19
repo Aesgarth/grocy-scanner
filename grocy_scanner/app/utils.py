@@ -134,3 +134,53 @@ def test_grocy_connection_handler():
     except Exception as e:
         logger.error(f"Unexpected error during connection test: {str(e)}")
         return jsonify({"status": "error", "message": f"Unexpected error: {str(e)}"}), 500
+        
+def purchase_product_in_grocy(barcode, grocy_url, api_key, quantity):
+    """
+    Purchase a product in Grocy.
+    """
+    try:
+        headers = {"GROCY-API-KEY": api_key}
+        url = f"{grocy_url}/api/stock/products/by-barcode/{barcode}/add"
+        response = requests.post(url, headers=headers, json={"amount": quantity})
+
+        if response.status_code == 200:
+            return True, f"Purchased {quantity} units of product with barcode {barcode}."
+        else:
+            return False, f"Grocy API error: {response.status_code}"
+    except Exception as e:
+        return False, f"Unexpected error: {str(e)}"
+
+
+def consume_product_in_grocy(barcode, grocy_url, api_key, quantity):
+    """
+    Consume a product in Grocy.
+    """
+    try:
+        headers = {"GROCY-API-KEY": api_key}
+        url = f"{grocy_url}/api/stock/products/by-barcode/{barcode}/consume"
+        response = requests.post(url, headers=headers, json={"amount": quantity})
+
+        if response.status_code == 200:
+            return True, f"Consumed {quantity} units of product with barcode {barcode}."
+        else:
+            return False, f"Grocy API error: {response.status_code}"
+    except Exception as e:
+        return False, f"Unexpected error: {str(e)}"
+
+
+def open_product_in_grocy(barcode, grocy_url, api_key):
+    """
+    Mark a product as opened in Grocy.
+    """
+    try:
+        headers = {"GROCY-API-KEY": api_key}
+        url = f"{grocy_url}/api/stock/products/by-barcode/{barcode}/open"
+        response = requests.post(url, headers=headers, json={"amount": 1})
+
+        if response.status_code == 200:
+            return True, f"Marked product with barcode {barcode} as opened."
+        else:
+            return False, f"Grocy API error: {response.status_code}"
+    except Exception as e:
+        return False, f"Unexpected error: {str(e)}"
