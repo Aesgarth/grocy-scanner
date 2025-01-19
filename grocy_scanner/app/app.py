@@ -75,6 +75,8 @@ def check_barcode():
     """
     Endpoint to handle barcode scanning and check against Grocy using the stock "by-barcode" API.
     """
+    logger.info("Received request at /api/check-barcode")
+    logger.info(f"Request data: {request.json}")
     if not grocy_url:
         return jsonify({"status": "error", "message": "Grocy URL is not resolved. Please check the configuration."}), 500
 
