@@ -33,7 +33,7 @@ async function startCamera() {
 
 // Function to start scanning
 function startScanning() {
-    if (scanning) return;
+    if (scanning) return; // Prevent multiple initializations
     scanning = true;
 
     message.textContent = "Initializing scanner...";
@@ -43,14 +43,12 @@ function startScanning() {
         {
             inputStream: {
                 type: "LiveStream",
-                target: video, // Attach to video element
-                constraints: {
-                    facingMode: "environment" // Use rear-facing camera
-                }
+                target: video,
+                constraints: { facingMode: "environment" },
             },
             decoder: {
-                readers: ["code_128_reader", "ean_reader", "ean_8_reader"] // Add other barcode formats as needed
-            }
+                readers: ["code_128_reader", "ean_reader", "ean_8_reader"],
+            },
         },
         (err) => {
             if (err) {
@@ -68,19 +66,25 @@ function startScanning() {
 
     Quagga.onDetected((data) => {
         const barcode = data.codeResult.code;
+        if (handledBarcodes.has(barcode)) {
+            console.log(`Barcode ${barcode} already handled.`);
+            return;
+        }
+        handledBarcodes.add(barcode);
         console.log("Barcode detected:", barcode);
         beepSound.play();
-        message.textContent = `Barcode detected: ${barcode}`;
 
-        // Stop scanning automatically after detection
+        // Stop scanning after detecting a barcode
         Quagga.stop();
         scanning = false;
-        // Handle the barcode
+
+        // Handle the detected barcode
         handleScannedBarcode(barcode);
     });
 }
 
 const BASE_PATH = window.location.pathname.replace(/\/$/, "");
+
 
 async function handleScannedBarcode(barcode) {
     message.textContent = "Checking barcode in Grocy...";
@@ -90,37 +94,35 @@ async function handleScannedBarcode(barcode) {
         const response = await fetch(`${BASE_PATH}/api/check-barcode`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
+            body: JSON.stringify({ barcode }),
         });
 
-        console.log("Response received:", response);
-
         if (!response.ok) {
-            // Log response details for debugging
             console.error("Response error:", response.status, response.statusText);
             message.textContent = `Error: ${response.statusText}. Please try again.`;
+            handledBarcodes.delete(barcode); // Allow re-scan if it failed
             return;
         }
 
         const result = await response.json();
-        console.log("Parsed response JSON:", result);
+        console.log("Response JSON:", result);
 
         if (result.status === "success") {
             const product = result.product;
             message.textContent = `Product found: ${product.name}. What would you like to do?`;
-            // TODO: Show UI options to add or remove quantity
+            // TODO: Add UI options for add/remove quantity
         } else if (result.status === "not_found") {
             message.textContent = "Product not found in Grocy. Would you like to add it?";
-            // TODO: Provide options to add barcode to an existing product or create a new one
+            // TODO: Add options for creating or associating the product
         } else {
             message.textContent = `Error: ${result.message}`;
         }
     } catch (error) {
         console.error("Error checking barcode in Grocy:", error);
         message.textContent = "Error checking barcode. Please try again.";
+        handledBarcodes.delete(barcode); // Allow re-scan if it failed
     }
 }
-
 
 // Attach event listeners
 startScanButton.addEventListener('click', startScanning);
