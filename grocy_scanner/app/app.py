@@ -106,6 +106,61 @@ def check_barcode():
         logger.error(f"Error checking barcode {barcode}: {result}")
         return jsonify({"status": "error", "message": result}), 500
 
+@app.route("/api/purchase-product", methods=["POST"])
+def purchase_product():
+    """
+    Endpoint to handle purchasing a product.
+    """
+    data = request.json
+    barcode = data.get("barcode")
+    quantity = data.get("quantity", 1)
+
+    if not barcode:
+        return jsonify({"status": "error", "message": "No barcode provided"}), 400
+
+    success, message = purchase_product_in_grocy(barcode, grocy_url, API_KEY, quantity)
+    if success:
+        return jsonify({"status": "success", "message": message})
+    else:
+        return jsonify({"status": "error", "message": message}), 500
+
+
+@app.route("/api/consume-product", methods=["POST"])
+def consume_product():
+    """
+    Endpoint to handle consuming a product.
+    """
+    data = request.json
+    barcode = data.get("barcode")
+    quantity = data.get("quantity", 1)
+
+    if not barcode:
+        return jsonify({"status": "error", "message": "No barcode provided"}), 400
+
+    success, message = consume_product_in_grocy(barcode, grocy_url, API_KEY, quantity)
+    if success:
+        return jsonify({"status": "success", "message": message})
+    else:
+        return jsonify({"status": "error", "message": message}), 500
+
+
+@app.route("/api/open-product", methods=["POST"])
+def open_product():
+    """
+    Endpoint to handle marking a product as opened.
+    """
+    data = request.json
+    barcode = data.get("barcode")
+
+    if not barcode:
+        return jsonify({"status": "error", "message": "No barcode provided"}), 400
+
+    success, message = open_product_in_grocy(barcode, grocy_url, API_KEY)
+    if success:
+        return jsonify({"status": "success", "message": message})
+    else:
+        return jsonify({"status": "error", "message": message}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3456)
