@@ -19,16 +19,7 @@ logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
 OPTIONS_PATH = "/data/options.json"
 
 # Read the API key from the options.json file
-API_KEY = None
-try:
-    with open(OPTIONS_PATH, 'r') as options_file:
-        options = json.load(options_file)
-        API_KEY = options.get("api_key")
-        logger.info(f"API_KEY loaded: {'Yes' if API_KEY else 'No'}")
-except FileNotFoundError:
-    logger.error(f"{OPTIONS_PATH} not found.")
-except json.JSONDecodeError as e:
-    logger.error(f"Error parsing {OPTIONS_PATH}: {e}")
+API_KEY = "RDH6KDeuMaL6SNzlBxJHqWvx37vZc5kdiV1uLmQuNfp4WWUvDU"
 
 
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
