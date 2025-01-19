@@ -55,9 +55,19 @@ try:
 except Exception as e:
     logger.error(f"Error during addon initialization: {str(e)}")
 
-@app.route('/')
-def home():
-    return {"message": "Grocy Item Scanner is running!"}
+@app.route("/")
+def index():
+    """
+    Serve the main index.html page.
+    """
+    return send_from_directory(WEB_DIR, "index.html")
+
+@app.route("/<path:filename>")
+def serve_static(filename):
+    """
+    Serve static files (CSS, JS, audio, etc.) from the web directory.
+    """
+    return send_from_directory(WEB_DIR, filename)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3456)
