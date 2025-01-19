@@ -67,6 +67,8 @@ button {
     padding: 12px 24px;
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
+    text-decoration: none;
     background-color: var(--primary-color);
     color: var(--text-primary-color);
     border: none;
@@ -74,6 +76,7 @@ button {
     cursor: pointer;
     box-shadow: var(--mdc-elevation-z2);
     transition: background-color 0.2s ease, transform 0.1s ease;
+    outline: none; /* Remove default browser outline */
 }
 
 button:hover {
