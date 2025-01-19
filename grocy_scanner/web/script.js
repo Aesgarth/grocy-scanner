@@ -36,7 +36,8 @@ async function startCamera() {
 function startScanning() {
     if (scanning) return; // Prevent multiple initializations
     scanning = true;
-
+    handledBarcodes.clear();
+    
     message.textContent = "Initializing scanner...";
     console.log("Scanner initialized.");
 
