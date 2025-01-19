@@ -12,9 +12,15 @@ async function startCamera() {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         console.log("Camera initialized successfully:", stream);
         video.srcObject = stream;
+
+        // Ensure the video starts playing
         video.onloadedmetadata = () => {
             console.log("Metadata loaded, playing video.");
-            video.play();
+            video.play().then(() => {
+                console.log("Video playing.");
+            }).catch((error) => {
+                console.error("Error playing video:", error);
+            });
         };
     } catch (error) {
         console.error("Error initializing camera:", error);
@@ -22,6 +28,7 @@ async function startCamera() {
         message.textContent = "Failed to access the camera. Please check permissions.";
     }
 }
+
 
 // Function to start scanning
 function startScanning() {
