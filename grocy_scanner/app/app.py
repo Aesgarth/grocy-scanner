@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection_handler, test_grocy_connection
 import os
 import logging
@@ -18,13 +18,6 @@ logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
 # Path to the options.json file
 OPTIONS_PATH = "/data/options.json"
 
-# Path to options.json
-OPTIONS_PATH = "/data/options.json"
-
-# Read the API key
-# Path to options.json
-OPTIONS_PATH = "/data/options.json"
-
 # Read the API key
 try:
     with open(OPTIONS_PATH, 'r') as options_file:
@@ -39,6 +32,7 @@ except json.JSONDecodeError as e:
 
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
 
+# Use supervisor API to locate the grocy URL on the internal network
 logger.info("Initializing Grocy Item Scanner addon...")
 try:
     # Locate Grocy addon
