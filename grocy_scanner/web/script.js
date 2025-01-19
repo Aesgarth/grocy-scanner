@@ -1,6 +1,7 @@
-const video = document.getElementById('camera');
-const startScanButton = document.getElementById('start-scan');
-const beepSound = document.getElementById('beep');
+const video = document.getElementById("camera");
+const startScanButton = document.getElementById("start-scan");
+const message = document.getElementById("message");
+const beepSound = document.getElementById("beep");
 
 let scanning = false;
 
@@ -33,17 +34,48 @@ async function startCamera() {
 // Function to start scanning
 function startScanning() {
     if (scanning) return;
-
     scanning = true;
-    console.log("Scanning started...");
 
-    // Simulate barcode scanning using a timer (replace this with QuaggaJS or ZXing integration)
-    setTimeout(() => {
-        scanning = false;
+    message.textContent = "Initializing scanner...";
+    console.log("Scanner initialized.");
+
+    Quagga.init(
+        {
+            inputStream: {
+                type: "LiveStream",
+                target: video, // Attach to video element
+                constraints: {
+                    facingMode: "environment" // Use rear-facing camera
+                }
+            },
+            decoder: {
+                readers: ["code_128_reader", "ean_reader", "ean_8_reader"] // Add other barcode formats as needed
+            }
+        },
+        (err) => {
+            if (err) {
+                console.error("Error initializing Quagga:", err);
+                message.textContent = "Failed to initialize scanner.";
+                scanning = false;
+                return;
+            }
+
+            message.textContent = "Scanning for barcodes...";
+            Quagga.start();
+            console.log("Quagga started.");
+        }
+    );
+
+    Quagga.onDetected((data) => {
+        const barcode = data.codeResult.code;
+        console.log("Barcode detected:", barcode);
         beepSound.play();
-        console.log("Barcode detected: 123456789");
-        alert("Barcode detected: 123456789");
-    }, 3000); // Simulates a barcode scan after 3 seconds
+        message.textContent = `Barcode detected: ${barcode}`;
+
+        // Stop scanning automatically after detection
+        Quagga.stop();
+        scanning = false;
+    });
 }
 
 // Attach event listeners
