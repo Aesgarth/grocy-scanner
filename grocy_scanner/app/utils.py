@@ -105,3 +105,21 @@ def test_grocy_connection(api_key, grocy_url):
     except requests.RequestException as e:
         return False, str(e)
 
+def check_barcode_in_grocy(barcode, grocy_url, api_key):
+    """
+    Check if a product exists in Grocy by its barcode.
+    """
+    try:
+        headers = {"GROCY-API-KEY": api_key}
+        response = requests.get(
+            f"{grocy_url}/api/stock/products/by-barcode/{barcode}",
+            headers=headers
+        )
+        if response.status_code == 200:
+            return True, response.json()  # Product found
+        elif response.status_code == 404:
+            return False, "Product not found in Grocy."
+        else:
+            return False, f"Grocy API error: {response.status_code}"
+    except Exception as e:
+        return False, f"Unexpected error: {str(e)}"
