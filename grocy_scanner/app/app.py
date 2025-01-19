@@ -1,5 +1,5 @@
 from flask import Flask, send_from_directory, jsonify, request
-from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection
+from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection, check_barcode_in_grocy
 import os
 import logging
 import json
