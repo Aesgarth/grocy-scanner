@@ -110,8 +110,15 @@ async function handleScannedBarcode(barcode) {
         console.log("Parsed response JSON:", result);
 
         if (result.status === "success") {
-            const { product_name, stock_amount, unit, location } = result; // Destructure pre-processed data
-            message.textContent = `Product: ${product_name}\nStock: ${stock_amount} ${unit}\nLocation: ${location}`;
+            // Access the product object
+            const { product } = result;
+
+            if (product) {
+                const { product_name, stock_amount, unit, location } = product;
+                message.textContent = `Product: ${product_name}\nStock: ${stock_amount} ${unit}\nLocation: ${location}`;
+            } else {
+                message.textContent = "Product details not available.";
+            }
         } else if (result.status === "not_found") {
             message.textContent = "Product not found in Grocy. Would you like to add it?";
         } else {
