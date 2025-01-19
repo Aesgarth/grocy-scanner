@@ -6,6 +6,9 @@ import json
 
 app = Flask(__name__)
 
+# Define the path to your web directory
+WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
