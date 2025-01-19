@@ -76,7 +76,7 @@ function startScanning() {
         Quagga.stop();
         scanning = false;
         // Handle the barcode
-        handleScannedBarcode(barcode);
+        // handleScannedBarcode(barcode);
     });
 }
 
