@@ -83,27 +83,42 @@ function startScanning() {
 async function handleScannedBarcode(barcode) {
     message.textContent = "Checking barcode in Grocy...";
     try {
+        console.log("Sending barcode to backend:", barcode);
+
         const response = await fetch("/api/check-barcode", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ barcode })
         });
 
+        console.log("Response received:", response);
+
+        if (!response.ok) {
+            // Log response details for debugging
+            console.error("Response error:", response.status, response.statusText);
+            message.textContent = `Error: ${response.statusText}. Please try again.`;
+            return;
+        }
+
         const result = await response.json();
+        console.log("Parsed response JSON:", result);
 
         if (result.status === "success") {
             const product = result.product;
             message.textContent = `Product found: ${product.name}. What would you like to do?`;
             // TODO: Show UI options to add or remove quantity
-        } else {
+        } else if (result.status === "not_found") {
             message.textContent = "Product not found in Grocy. Would you like to add it?";
             // TODO: Provide options to add barcode to an existing product or create a new one
+        } else {
+            message.textContent = `Error: ${result.message}`;
         }
     } catch (error) {
         console.error("Error checking barcode in Grocy:", error);
         message.textContent = "Error checking barcode. Please try again.";
     }
 }
+
 
 // Attach event listeners
 startScanButton.addEventListener('click', startScanning);
