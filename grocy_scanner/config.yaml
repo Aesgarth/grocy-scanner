@@ -10,9 +10,9 @@ startup: application
 init: false
 protected: false
 host_network: true
-full_access: true
+full_access: false
 hassio_api: true
-hassio_role: admin
+hassio_role: manager
 homeassistant_api: true
 auth_api: true
 ingress: true
