@@ -86,7 +86,6 @@ function startScanning() {
 
 const BASE_PATH = window.location.pathname.replace(/\/$/, "");
 
-
 async function handleScannedBarcode(barcode) {
     message.textContent = "Checking barcode in Grocy...";
     try {
@@ -95,33 +94,35 @@ async function handleScannedBarcode(barcode) {
         const response = await fetch(`${BASE_PATH}/api/check-barcode`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode }),
+            body: JSON.stringify({ barcode })
         });
+
+        console.log("Response received:", response);
 
         if (!response.ok) {
             console.error("Response error:", response.status, response.statusText);
             message.textContent = `Error: ${response.statusText}. Please try again.`;
-            handledBarcodes.delete(barcode); // Allow re-scan if it failed
             return;
         }
 
         const result = await response.json();
-        console.log("Response JSON:", result);
+        console.log("Parsed response JSON:", result);
 
         if (result.status === "success") {
             const product = result.product;
-            message.textContent = `Product found: ${product.name}. What would you like to do?`;
-            // TODO: Add UI options for add/remove quantity
+            if (product && product.name) {
+                message.textContent = `Product found: ${product.name}. What would you like to do?`;
+            } else {
+                message.textContent = "Product details not available.";
+            }
         } else if (result.status === "not_found") {
             message.textContent = "Product not found in Grocy. Would you like to add it?";
-            // TODO: Add options for creating or associating the product
         } else {
             message.textContent = `Error: ${result.message}`;
         }
     } catch (error) {
         console.error("Error checking barcode in Grocy:", error);
         message.textContent = "Error checking barcode. Please try again.";
-        handledBarcodes.delete(barcode); // Allow re-scan if it failed
     }
 }
 
