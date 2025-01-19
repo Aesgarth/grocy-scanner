@@ -76,63 +76,6 @@ function startScanning() {
         Quagga.stop();
         scanning = false;
         // Handle the barcode
-        // handleScannedBarcode(barcode);
-    });
-}
-
-const video = document.getElementById("camera");
-const startScanButton = document.getElementById("start-scan");
-const message = document.getElementById("message");
-const beepSound = document.getElementById("beep");
-
-let scanning = false;
-
-function startScanning() {
-    if (scanning) return;
-    scanning = true;
-
-    message.textContent = "Initializing scanner...";
-    console.log("Scanner initialized.");
-
-    Quagga.init(
-        {
-            inputStream: {
-                type: "LiveStream",
-                target: video, // Attach to video element
-                constraints: {
-                    facingMode: "environment" // Rear camera
-                }
-            },
-            decoder: {
-                readers: ["code_128_reader", "ean_reader", "ean_8_reader"] // Supported barcode types
-            }
-        },
-        (err) => {
-            if (err) {
-                console.error("Error initializing Quagga:", err);
-                message.textContent = "Failed to initialize scanner.";
-                scanning = false;
-                return;
-            }
-
-            message.textContent = "Scanning for barcodes...";
-            Quagga.start();
-            console.log("Quagga started.");
-        }
-    );
-
-    // Handle detected barcode
-    Quagga.onDetected((data) => {
-        const barcode = data.codeResult.code;
-        console.log("Barcode detected:", barcode);
-        beepSound.play();
-        message.textContent = `Barcode detected: ${barcode}`;
-
-        // Stop scanning
-        Quagga.stop();
-        scanning = false;
-
-        // Handle the barcode
         handleScannedBarcode(barcode);
     });
 }
