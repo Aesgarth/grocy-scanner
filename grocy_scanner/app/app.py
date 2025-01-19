@@ -23,7 +23,7 @@ OPTIONS_PATH = "/data/options.json"
 
 # Read the API key
 try:
-    with open(OPTIONS_PATH, 'r') as options_file:
+    with open(OPTIONS_PATH, "r") as options_file:
         options = json.load(options_file)
         API_KEY = options.get("grocy_api_key")  # Match the correct key name
         logger.info(f"API_KEY loaded: {'Yes' if API_KEY else 'No'}")
@@ -49,6 +49,7 @@ try:
         logger.info(f"Successfully connected to Grocy at {grocy_url}. API is accessible.")
     else:
         logger.error(f"Failed to connect to Grocy at {grocy_url}. Error: {message}")
+        grocy_url = None
 except Exception as e:
     logger.error(f"Error during addon initialization: {str(e)}")
     grocy_url = None  # Ensure this variable exists even on failure
@@ -77,23 +78,34 @@ def check_barcode():
     """
     logger.info("Received request at /api/check-barcode")
     logger.info(f"Request data: {request.json}")
+    
     if not grocy_url:
+        logger.error("Grocy URL is not resolved. Cannot process request.")
         return jsonify({"status": "error", "message": "Grocy URL is not resolved. Please check the configuration."}), 500
+
+    if not API_KEY:
+        logger.error("API Key is missing. Cannot process request.")
+        return jsonify({"status": "error", "message": "API Key is missing. Please configure the addon properly."}), 500
 
     data = request.json
     barcode = data.get("barcode")
 
     if not barcode:
+        logger.error("No barcode provided in request.")
         return jsonify({"status": "error", "message": "No barcode provided"}), 400
 
     success, result = check_barcode_in_grocy(barcode, grocy_url, API_KEY)
 
     if success:
+        logger.info(f"Barcode {barcode} found in Grocy. Returning product data.")
         return jsonify({"status": "success", "product": result})
     elif "not found" in result.lower():
+        logger.info(f"Barcode {barcode} not found in Grocy.")
         return jsonify({"status": "not_found", "message": result})
     else:
+        logger.error(f"Error checking barcode {barcode}: {result}")
         return jsonify({"status": "error", "message": result}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3456)
