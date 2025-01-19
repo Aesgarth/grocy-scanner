@@ -90,32 +90,24 @@ const BASE_PATH = window.location.pathname.replace(/\/$/, "");
 async function handleScannedBarcode(barcode) {
     message.textContent = "Checking barcode in Grocy...";
     try {
-        console.log("Sending barcode to backend:", barcode);
-
         const response = await fetch(`${BASE_PATH}/api/check-barcode`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode }),
+            body: JSON.stringify({ barcode })
         });
 
-        console.log("Response received:", response);
-
         if (!response.ok) {
-            console.error("Response error:", response.status, response.statusText);
             message.textContent = `Error: ${response.statusText}. Please try again.`;
             return;
         }
 
         const result = await response.json();
-        console.log("Parsed response JSON:", result);
 
         if (result.status === "success") {
-            // Access the product object
-            const { product } = result;
-
-            if (product) {
-                const { product_name, stock_amount, unit, location } = product;
-                message.textContent = `Product: ${product_name}\nStock: ${stock_amount} ${unit}\nLocation: ${location}`;
+            const product = result.product;
+            if (product && product.product_name) {
+                message.textContent = `Product found: ${product.product_name}. What would you like to do?`;
+                showActions(barcode); // Show action buttons
             } else {
                 message.textContent = "Product details not available.";
             }
@@ -127,6 +119,48 @@ async function handleScannedBarcode(barcode) {
     } catch (error) {
         console.error("Error checking barcode in Grocy:", error);
         message.textContent = "Error checking barcode. Please try again.";
+    }
+}
+
+function showActions(barcode) {
+    const actionsDiv = document.getElementById("actions");
+    const purchaseButton = document.getElementById("purchase-button");
+    const consumeButton = document.getElementById("consume-button");
+    const openButton = document.getElementById("open-button");
+
+    actionsDiv.style.display = "block";
+
+    purchaseButton.onclick = () => performAction("purchase", barcode);
+    consumeButton.onclick = () => performAction("consume", barcode);
+    openButton.onclick = () => performAction("open", barcode);
+}
+
+async function performAction(action, barcode) {
+    const quantity = document.getElementById("quantity").value || 1;
+    const endpoint = {
+        purchase: "/api/purchase-product",
+        consume: "/api/consume-product",
+        open: "/api/open-product",
+    }[action];
+
+    const body = action === "open" ? { barcode } : { barcode, quantity };
+
+    try {
+        const response = await fetch(`${BASE_PATH}${endpoint}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+            message.textContent = result.message;
+        } else {
+            message.textContent = `Error: ${result.message}`;
+        }
+    } catch (error) {
+        console.error(`Error performing ${action}:`, error);
+        message.textContent = `Error performing ${action}. Please try again.`;
     }
 }
 
