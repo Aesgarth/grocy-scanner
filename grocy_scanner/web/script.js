@@ -80,12 +80,14 @@ function startScanning() {
     });
 }
 
+const BASE_PATH = window.location.pathname.replace(/\/$/, "");
+
 async function handleScannedBarcode(barcode) {
     message.textContent = "Checking barcode in Grocy...";
     try {
         console.log("Sending barcode to backend:", barcode);
 
-        const response = await fetch("/api/check-barcode", {
+        const response = await fetch(`${BASE_PATH}/api/check-barcode`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ barcode })
