@@ -14,6 +14,7 @@ logger.info(f"Environment Variables: {os.environ}")
 SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated environment variable
 logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
 API_KEY = os.getenv("API_KEY")  # Pass the Grocy API key in the addon configuration
+logger.info(f"Using API_KEY: {API_KEY}")
 
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
 
