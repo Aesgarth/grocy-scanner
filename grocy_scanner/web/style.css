@@ -9,9 +9,13 @@ body {
 
 /* Header */
 h1 {
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: bold;
     color: var(--primary-color);
     text-align: center;
+    margin: 16px 0;
+    border-bottom: 1px solid var(--divider-color);
+    padding-bottom: 8px;
 }
 
 /* Scanner Container */
@@ -19,34 +23,67 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px dashed var(--divider-color);
+    flex-direction: column;
+    border: 1px solid var(--divider-color);
     padding: 16px;
-    height: 300px;
+    min-height: 300px;
     background-color: var(--card-background-color);
     border-radius: 8px;
     margin: 16px auto;
+    width: calc(100% - 32px);
+    max-width: 600px;
+    box-shadow: var(--mdc-elevation-z2);
+}
+
+/* Video Element */
+#camera {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    background-color: var(--secondary-background-color);
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    margin: 16px auto;
+    box-shadow: var(--mdc-elevation-z2);
+}
+
+/* Message */
+#message {
+    font-size: 16px;
+    color: var(--secondary-text-color);
+    text-align: center;
+    margin-top: 16px;
+    padding: 8px;
+    background-color: var(--card-background-color);
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    box-shadow: var(--mdc-elevation-z2);
 }
 
 /* Button */
 button {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 16px;
+    font-weight: bold;
     background-color: var(--primary-color);
     color: var(--text-primary-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     box-shadow: var(--mdc-elevation-z2);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 button:hover {
     background-color: var(--primary-dark-color);
     box-shadow: var(--mdc-elevation-z4);
+    transform: scale(1.02);
 }
 
 button:active {
     background-color: var(--primary-light-color);
     box-shadow: var(--mdc-elevation-z8);
+    transform: scale(0.98);
 }
