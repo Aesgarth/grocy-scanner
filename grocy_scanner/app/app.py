@@ -1,5 +1,5 @@
-from flask import Flask, send_from_directory
-from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection_handler, test_grocy_connection
+from flask import Flask, send_from_directory, jsonify, request
+from utils import get_grocy_addon_info, get_addon_ip_and_port, test_grocy_connection
 import os
 import logging
 import json
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Environment variables
 logger.info(f"Environment Variables: {os.environ}")
-SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")  # Updated environment variable
+SUPERVISOR_TOKEN = os.getenv("SUPERVISOR_TOKEN")
 logger.info(f"SUPERVISOR_TOKEN available: {bool(SUPERVISOR_TOKEN)}")
 
 # Path to the options.json file
@@ -29,27 +29,30 @@ try:
         logger.info(f"API_KEY loaded: {'Yes' if API_KEY else 'No'}")
 except FileNotFoundError:
     logger.error(f"{OPTIONS_PATH} not found.")
+    API_KEY = None
 except json.JSONDecodeError as e:
     logger.error(f"Error parsing {OPTIONS_PATH}: {e}")
+    API_KEY = None
 
 HEADERS = {"Authorization": f"Bearer {SUPERVISOR_TOKEN}"}  # Updated header for Supervisor API
 
 # Use supervisor API to locate the grocy URL on the internal network
 logger.info("Initializing Grocy Item Scanner addon...")
 try:
-    # Locate Grocy addon
-    grocy_slug = get_grocy_addon_info(headers=HEADERS)  # Pass headers to utils function
+    grocy_slug = get_grocy_addon_info(headers=HEADERS)
     grocy_ip, grocy_port = get_addon_ip_and_port(grocy_slug, headers=HEADERS)
-    grocy_url = f"http://{grocy_ip}:{grocy_port}/api/system/info"
-    
-    # Test API connection
-    success, message = test_grocy_connection(API_KEY, grocy_url)
+    grocy_url = f"http://{grocy_ip}:{grocy_port}"  # Base URL for Grocy
+    system_info_url = f"{grocy_url}/api/system/info"
+
+    success, message = test_grocy_connection(API_KEY, system_info_url)
     if success:
         logger.info(f"Successfully connected to Grocy at {grocy_url}. API is accessible.")
     else:
         logger.error(f"Failed to connect to Grocy at {grocy_url}. Error: {message}")
 except Exception as e:
     logger.error(f"Error during addon initialization: {str(e)}")
+    grocy_url = None  # Ensure this variable exists even on failure
+
 
 @app.route("/")
 def index():
@@ -58,12 +61,50 @@ def index():
     """
     return send_from_directory(WEB_DIR, "index.html")
 
+
 @app.route("/<path:filename>")
 def serve_static(filename):
     """
     Serve static files (CSS, JS, audio, etc.) from the web directory.
     """
     return send_from_directory(WEB_DIR, filename)
+
+
+@app.route("/api/check-barcode", methods=["POST"])
+def check_barcode():
+    """
+    Endpoint to handle barcode scanning and check against Grocy.
+    """
+    if not grocy_url:
+        return jsonify({"status": "error", "message": "Grocy URL is not resolved. Please check the configuration."}), 500
+
+    data = request.json
+    barcode = data.get("barcode")
+
+    if not barcode:
+        return jsonify({"status": "error", "message": "No barcode provided"}), 400
+
+    try:
+        headers = {"GROCY-API-KEY": API_KEY}
+        response = requests.get(
+            f"{grocy_url}/api/objects/products",
+            headers=headers,
+            params={"query": f"barcode={barcode}"}
+        )
+
+        if response.status_code == 200:
+            products = response.json()
+            if products:
+                product = products[0]  # Assume the first match is correct
+                return jsonify({"status": "success", "product": product})
+            else:
+                return jsonify({"status": "not_found", "message": "Product not found"})
+        else:
+            return jsonify({"status": "error", "message": f"Grocy API error: {response.status_code}"}), response.status_code
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3456)
