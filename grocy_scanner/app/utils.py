@@ -76,29 +76,39 @@ def test_grocy_connection(api_key, grocy_url):
 
 def check_barcode_in_grocy(barcode, grocy_url, api_key):
     """
-    Check if a product exists in Grocy by its barcode.
+    Check if a product exists in Grocy by its barcode and process data for the frontend.
     """
     try:
         headers = {"GROCY-API-KEY": api_key}
         url = f"{grocy_url}/api/stock/products/by-barcode/{barcode}"
-        logger.info(f"Checking barcode {barcode} at {url}")
-
         response = requests.get(url, headers=headers)
-        logger.info(f"Response Status Code: {response.status_code}")
+
+        logging.info(f"Checking barcode {barcode} at {url}")
+        logging.info(f"Response Status Code: {response.status_code}")
+        logging.info(f"Response Body: {response.text}")
 
         if response.status_code == 200:
-            logger.info(f"Product found for barcode {barcode}")
-            return True, response.json()  # Product found
+            data = response.json()
+            product = data.get("product", {})
+            stock_amount = data.get("stock_amount", 0)
+            location = data.get("location", {}).get("name", "Unknown location")
+
+            return True, {
+                "product_name": product.get("name", "Unnamed Product"),
+                "stock_amount": stock_amount,
+                "unit": product.get("quantity_unit_stock", {}).get("name", "units"),
+                "location": location,
+            }
+
         elif response.status_code == 404:
-            logger.warning(f"Product not found for barcode {barcode}")
             return False, "Product not found in Grocy."
         else:
-            logger.error(f"Grocy API error: {response.status_code}")
             return False, f"Grocy API error: {response.status_code}"
-    except requests.RequestException as e:
-        logger.error(f"Error checking barcode in Grocy: {e}")
-        return False, f"Unexpected error: {str(e)}"
 
+    except Exception as e:
+        logging.error(f"Unexpected error while checking barcode: {str(e)}")
+        return False, f"Unexpected error: {str(e)}"
+        
 def test_grocy_connection_handler():
     """
     Handle the Grocy connection testing process via an API endpoint.
