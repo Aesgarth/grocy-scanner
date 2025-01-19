@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import logging
 from flask import jsonify, request
 
 SUPERVISOR_API = "http://supervisor"
