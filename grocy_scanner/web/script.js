@@ -4,6 +4,7 @@ const message = document.getElementById("message");
 const beepSound = document.getElementById("beep");
 
 let scanning = false;
+let handledBarcodes = new Set(); // Initialize as a Set to track unique barcodes
 
 // Initialize the camera
 async function startCamera() {
